@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const socketIo = require('socket.io');
 const app = express();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 80;
 
 const server = http.createServer(app);
 const io = socketIo(server);
