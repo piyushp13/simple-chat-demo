@@ -3,7 +3,7 @@ import socketIOClient from 'socket.io-client';
 
 export class ChatComponent extends React.Component {
     socket;
-    messageView;
+    messageInput;
     userName = '';
     constructor() {
         super();
@@ -29,7 +29,7 @@ export class ChatComponent extends React.Component {
     }
 
     componentDidMount() {
-        this.messageView = document.querySelector('#messageView');
+        this.messageInput = document.querySelector('textarea');
         const { endpoint } = this.state;
         this.socket = socketIOClient(endpoint);
         this.socket.on("common-room", data => {
@@ -56,8 +56,9 @@ export class ChatComponent extends React.Component {
     }
 
     sendMessage() {
-        const message = document.querySelector('textarea').value;
+        const message = this.messageInput.value;
         const messageBuffer = this.str2ab(message);
+        this.messageInput.value = '';
         this.socket.emit('common-room', { message: messageBuffer, type: 'text', userName: this.userName });
     }
 
