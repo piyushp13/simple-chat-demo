@@ -15,7 +15,7 @@ const welcomeMessage =  (userName) => ({message: `Hi! You're connected to the co
 
 app.use(bodyParser.json());
 app.use(cors());
-
+app.use(express.static(`${__dirname}/build`));
 const broadcastMessage = (message) => {
     io.emit('common-room', message);
 };

@@ -10,7 +10,7 @@ export class ChatComponent extends React.Component {
         this.state = {
             messages: [],
             response: false,
-            endpoint: 'http://localhost:4000',
+            endpoint: `http://${window.location.hostname}:4000`,
             isUsernameSet: false
         }
     }
@@ -49,7 +49,7 @@ export class ChatComponent extends React.Component {
                 if (data.userName) {
                     decodedData = `${data.userName}: ${decodedData}`;
                 }
-                currentMessageLine = <div>{decodedData}</div>;
+                currentMessageLine = <div key={this.state.messages.length}>{decodedData}</div>;
             }
             this.setState({ messages: this.state.messages.concat([currentMessageLine]) });
         });
@@ -72,29 +72,29 @@ export class ChatComponent extends React.Component {
         fileReader.readAsArrayBuffer(imageData);
     }
 
-    encodeTypedArrayToBase64 (input) {
+    encodeTypedArrayToBase64(input) {
         var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
         var output = "";
         var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
         var i = 0;
-    
+
         while (i < input.length) {
             chr1 = input[i++];
             chr2 = i < input.length ? input[i++] : Number.NaN; // Not sure if the index 
             chr3 = i < input.length ? input[i++] : Number.NaN; // checks are needed here
-    
+
             enc1 = chr1 >> 2;
             enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
             enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
             enc4 = chr3 & 63;
-    
+
             if (isNaN(chr2)) {
                 enc3 = enc4 = 64;
             } else if (isNaN(chr3)) {
                 enc4 = 64;
             }
             output += keyStr.charAt(enc1) + keyStr.charAt(enc2) +
-                      keyStr.charAt(enc3) + keyStr.charAt(enc4);
+                keyStr.charAt(enc3) + keyStr.charAt(enc4);
         }
         return output;
     }
@@ -102,37 +102,41 @@ export class ChatComponent extends React.Component {
     setUsername() {
         const originalUserName = this.userName;
         this.userName = document.querySelector('#username').value;
-        this.socket.emit('user-update', {originalUserName: originalUserName, updatedUserName: this.userName});
-        this.setState({isUsernameSet: true});
+        this.socket.emit('user-update', { originalUserName: originalUserName, updatedUserName: this.userName });
+        this.setState({ isUsernameSet: true });
     }
 
     userNameInput() {
         if (!this.state.isUsernameSet) {
-            return(
+            return (
                 <div>
-                <input type="text" placeholder="Enter Username" id="username" />
-                <button onClick={(event) => this.setUsername()}>Submit</button>
+                    <input type="text" placeholder="Enter Username" id="username" />
+                    <button onClick={(event) => this.setUsername()}>Submit</button>
                 </div>
-        );
+            );
         } else {
-            return(<div></div>);
+            return (<div></div>);
         }
     }
 
     render() {
-        return (<div id="chat-window-container">
+        return (<div id="chat-window-container" style={{ height: '100%' }}>
             <div>
                 Chat
             </div>
             <div>
                 {this.userNameInput()}
             </div>
-            <div id="messageView" style={{height: '600px', overflowY: "auto"}}>
+            <div id="messageView" style={{ height: '80%', overflowY: "auto" }}>
                 {this.state.messages}
             </div>
-            <div>
-                <textarea placeholder="Enter text here" rows="3"></textarea>
-                <input type="file" onChange={(event) => { this.sendImage(event) }} placeholder="Send Image" />
+            <div style={{display: 'flex'}}>
+                <div style={{float: 'left', display: 'flex', width: '50%', alignItems: 'center', justifyContent: 'center'}}>
+                    <textarea placeholder="Enter text here" rows="3" style={{width: '98%', margin: '1%', borderRadius: '3px'}}></textarea>
+                </div>
+                <div style={{float: 'left', display: 'flex', width: '50%', alignItems: 'center', justifyContent: 'center'}}> 
+                    <input type="file" onChange={(event) => { this.sendImage(event) }} placeholder="Send Image" />
+                </div>
             </div>
             <div>
                 <button onClick={() => { this.sendMessage() }}>Send</button>
