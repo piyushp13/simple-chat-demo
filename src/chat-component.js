@@ -10,7 +10,7 @@ export class ChatComponent extends React.Component {
         this.state = {
             messages: [],
             response: false,
-            endpoint: `http://${window.location.hostname}:4000`,
+            endpoint: `${window.location.protocol}//${window.location.hostname}:4000`,
             isUsernameSet: false
         }
     }
