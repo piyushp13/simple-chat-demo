@@ -1,5 +1,6 @@
 import React from 'react';
 import socketIOClient from 'socket.io-client';
+import { ImageIcon } from './image-icon';
 
 export class ChatComponent extends React.Component {
     socket;
@@ -120,6 +121,11 @@ export class ChatComponent extends React.Component {
         }
     }
 
+    triggerUpload() {
+        console.log('Triggered');
+        document.querySelector('#imageUpload').click();
+    }
+
     render() {
         return (<div id="chat-window-container" style={{ height: '100%' }}>
             <div>
@@ -132,11 +138,15 @@ export class ChatComponent extends React.Component {
                 {this.state.messages}
             </div>
             <div style={{display: 'flex'}}>
-                <div style={{float: 'left', display: 'flex', width: '50%', alignItems: 'center', justifyContent: 'center'}}>
+                <div style={{float: 'left', display: 'flex', width: '70%', alignItems: 'center', justifyContent: 'center'}}>
                     <textarea placeholder="Enter text here" rows="3" style={{width: '98%', margin: '1%', borderRadius: '3px'}}></textarea>
                 </div>
-                <div style={{float: 'left', display: 'flex', width: '50%', alignItems: 'center', justifyContent: 'center'}}> 
-                    <input type="file" onChange={(event) => { this.sendImage(event) }} placeholder="Send Image" />
+                <div style={{float: 'left', display: 'flex', width: '30%', alignItems: 'center', justifyContent: 'center'}}> 
+                    <label>
+                        <ImageIcon onClick={() => this.triggerUpload()}></ImageIcon>
+                    </label>
+                    <input id="imageUpload" type="file" onChange={(event) => { this.sendImage(event) }}
+                    placeholder="Send Image" style={{opacity: 0, width: '0%'}}/>
                 </div>
             </div>
             <div>
